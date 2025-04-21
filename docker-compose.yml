@@ -165,13 +165,13 @@ services:
         condition: service_healthy
 
   ui:
-    image: safeglobal/safe-wallet-web:${UI_VERSION}
+    image: nethsurge/safe-wallet-web:hoodi
     env_file:
       - container_env_files/ui.env
     depends_on:
       - nginx
     expose:
-      - 8080
+      - 3000
 
   general-rabbitmq:
     image: rabbitmq:alpine
