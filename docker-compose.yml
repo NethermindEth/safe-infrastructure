@@ -28,14 +28,11 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "8000:8000"
-      - "443:443"
+      - "${REVERSE_PROXY_PORT}:8000"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - nginx-shared-txs:/nginx-txs
       - nginx-shared-cfg:/nginx-cfg
-      - ./ssl/certbot/conf:/etc/letsencrypt
-      - ./ssl/certbot/www:/var/www/certbot
     depends_on:
       - txs-web
       - cfg-web
@@ -85,9 +82,6 @@ services:
 
   txs-worker-indexer: &txs-worker
     image: safeglobal/safe-transaction-service:${TXS_VERSION}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     env_file:
       - container_env_files/txs.env
     environment:
@@ -107,9 +101,6 @@ services:
     environment:
       - WORKER_QUEUES=contracts,tokens
       - ETHEREUM_NODE_URL=${RPC_NODE_URL}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     depends_on:
       txs-worker-indexer:
         condition: service_healthy
@@ -119,18 +110,12 @@ services:
     environment:
       - WORKER_QUEUES=notifications,webhooks
       - ETHEREUM_NODE_URL=${RPC_NODE_URL}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     depends_on:
       txs-worker-indexer:
         condition: service_healthy
 
   txs-web:
     image: safeglobal/safe-transaction-service:${TXS_VERSION}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     env_file:
       - container_env_files/txs.env
     environment:
@@ -143,12 +128,8 @@ services:
       - nginx-shared-txs:/nginx
     command: docker/web/run_web.sh
 
-
   txs-scheduler:
     <<: *txs-worker
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     depends_on:
       txs-db:
         condition: service_healthy
@@ -159,9 +140,6 @@ services:
   # Safe Config Service
   cfg-web:
     image: safeglobal/safe-config-service:${CFG_VERSION}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     tty: true
     volumes:
       - nginx-shared-cfg:/nginx
@@ -180,20 +158,16 @@ services:
 
   cgw-web:
     image: safeglobal/safe-client-gateway-nest:${CGW_VERSION}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     env_file:
       - container_env_files/cgw.env
+    environment:
+      - BRIDGE_API_KEY=${BRIDGE_API_KEY:-https://li.quest}
     depends_on:
       cgw-redis:
         condition: service_healthy
 
   ui:
-    image: nethsurge/safe-wallet-web:1.5.0
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
+    image: nethermindeth/safe-wallet-web:latest
     env_file:
       - container_env_files/ui.env
     depends_on:
@@ -212,9 +186,6 @@ services:
 
   events-web:
     image: safeglobal/safe-events-service:${EVENTS_VERSION}
-    labels:
-      logs_enabled: "true"
-      custom_network: "testnet"
     env_file:
       - container_env_files/events.env
     depends_on:
