@@ -167,7 +167,7 @@ services:
         condition: service_healthy
 
   ui:
-    image: nethermindeth/safe-wallet-web:latest
+    image: nethermind/surge-safe-ui:latest
     env_file:
       - container_env_files/ui.env
     depends_on:
