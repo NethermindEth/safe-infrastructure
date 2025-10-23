@@ -25,20 +25,19 @@ echo "================================================================"
 echo ""
 
 # Step 1: Add L2 chain configuration
-echo "[1/3] Adding L2 chain configuration..."
+echo "[1/2] Adding L2 chain configuration..."
 docker compose exec -T cfg-web python src/manage.py shell < tmp/add-chain-via-shell.py 2>&1 | grep -E "(Chain.*created|Chain.*already exists)" || echo "  Done"
 echo ""
 
 # Step 2: Add Safe contract addresses
-echo "[2/3] Configuring Safe contract addresses..."
+echo "[2/2] Configuring Safe contract addresses..."
 docker compose exec -T cfg-web python src/manage.py shell < tmp/add-safe-contracts.py 2>&1 | grep -E "(Contract addresses updated|Found chain)" || echo "  Done"
-echo ""
-
-# Step 3: Verify setup
-echo "[3/3] Verifying configuration..."
-./tmp/full-verification.sh | tail -20
 echo ""
 
 echo "================================================================"
 echo "Setup complete! Safe Infrastructure is ready for use."
 echo "================================================================"
+echo ""
+echo "Run verification:"
+echo "  ./scripts/check-safe-infrastructure.sh"
+echo ""
