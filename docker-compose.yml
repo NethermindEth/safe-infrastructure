@@ -88,6 +88,8 @@ services:
       - ETHEREUM_NODE_URL=${RPC_NODE_URL}
       - RUN_MIGRATIONS=1
       - WORKER_QUEUES=default,indexing,processing
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       txs-db:
         condition: service_healthy
@@ -120,6 +122,8 @@ services:
       - container_env_files/txs.env
     environment:
       - ETHEREUM_NODE_URL=${RPC_NODE_URL}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       txs-worker-indexer:
         condition: service_healthy
