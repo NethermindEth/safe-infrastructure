@@ -38,7 +38,7 @@ This script:
 ### Verify Complete Infrastructure
 
 ```bash
-./scripts/verify-safe-infrastructure.sh
+./scripts/check-safe-infrastructure.sh
 ```
 
 **Recommended for CI/CD testing.**
