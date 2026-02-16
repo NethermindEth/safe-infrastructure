@@ -167,7 +167,7 @@ services:
         condition: service_healthy
 
   ui:
-    image: nethermind/surge-safe-ui:latest
+    image: nethermind/surge-safe-ui:sha-c7f1238
     env_file:
       - container_env_files/ui.env
     depends_on:
